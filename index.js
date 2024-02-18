@@ -9,8 +9,15 @@ const client = new Client({
 
 const prefix = '+';
 
+let deletedChannels = 0;
+let lastDeletedTimestamp = 0;
+
 client.on('messageCreate', (message) => {
   if (message.author.bot || !message.guild) return;
+
+  if (!message.member.permissions.has('ADMINISTRATOR')) {
+    return message.reply("Vous n'avez pas la permission d'utiliser ces commandes.");
+  }
 
   if (message.content.startsWith(prefix + 'help')) {
     displayHelp(message);
@@ -23,6 +30,27 @@ client.on('messageCreate', (message) => {
   if (message.content.startsWith(prefix + 'protect')) {
     activateProtection(message);
   }
+});
+
+client.on('channelDelete', (channel) => {
+  deletedChannels += 1;
+
+  const currentTimestamp = Date.now();
+  const timeDifference = currentTimestamp - lastDeletedTimestamp;
+
+  if (timeDifference > 1000) {
+    // Reset if more than 1 second has passed
+    deletedChannels = 1;
+    lastDeletedTimestamp = currentTimestamp;
+  } else if (deletedChannels >= 10) {
+    // Kick all bots if more than 10 channels deleted in 1 second
+    kickAllBots(channel.guild);
+  }
+});
+
+client.on('guildCreate', (guild) => {
+  deletedChannels = 0;
+  lastDeletedTimestamp = 0;
 });
 
 function displayHelp(message) {
@@ -54,6 +82,15 @@ async function activateProtection(message) {
     console.error('Erreur lors de l\'activation de la protection :', error);
     message.reply('Impossible d\'activer la protection.');
   }
+}
+
+function kickAllBots(guild) {
+  // Kicks all bots from the server
+  guild.members.cache
+    .filter(member => member.user.bot)
+    .forEach(bot => bot.kick());
+
+  console.log('Tous les bots ont été expulsés du serveur.');
 }
 
 client.login('process.env.TOKEN');
