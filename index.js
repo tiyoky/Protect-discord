@@ -28,9 +28,9 @@ client.on('messageCreate', (message) => {
   }
 
   if (message.content.startsWith(prefix + 'protect')) {
-    activateProtection(message);
-  }
-});
+  await activateProtection(message);
+}
+
 
 client.on('channelDelete', (channel) => {
   deletedChannels += 1;
