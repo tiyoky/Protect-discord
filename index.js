@@ -8,11 +8,11 @@ const client = new Client({
 });
 
 const prefix = '+';
-
 let deletedChannels = 0;
 let lastDeletedTimestamp = 0;
+let protectionActivated = false;
 
-client.on('messageCreate', async (message) => {
+client.on('messageCreate', (message) => {
   if (message.author.bot || !message.guild) return;
 
   if (!message.member.permissions.has('ADMINISTRATOR')) {
@@ -24,33 +24,37 @@ client.on('messageCreate', async (message) => {
   }
 
   if (message.content.startsWith(prefix + 'protect++')) {
-    await activateHighProtection(message);
+    activateHighProtection(message);
   }
 
   if (message.content.startsWith(prefix + 'protect')) {
-    await activateProtection(message);
+    activateProtection(message);
   }
 });
 
 client.on('channelDelete', (channel) => {
-  deletedChannels += 1;
+  if (protectionActivated) {
+    deletedChannels += 1;
 
-  const currentTimestamp = Date.now();
-  const timeDifference = currentTimestamp - lastDeletedTimestamp;
+    const currentTimestamp = Date.now();
+    const timeDifference = currentTimestamp - lastDeletedTimestamp;
 
-  if (timeDifference > 1000) {
-    // Reset if more than 1 second has passed
-    deletedChannels = 1;
-    lastDeletedTimestamp = currentTimestamp;
-  } else if (deletedChannels >= 10) {
-    // Kick all bots if more than 10 channels deleted in 1 second
-    kickAllBots(channel.guild);
+    if (timeDifference > 1000) {
+      // Reset if more than 1 second has passed
+      deletedChannels = 1;
+      lastDeletedTimestamp = currentTimestamp;
+    } else if (deletedChannels >= 10) {
+      // Kick all bots if more than 10 channels deleted in 1 second
+      kickAllBots(channel.guild);
+    }
   }
 });
 
 client.on('guildCreate', (guild) => {
-  deletedChannels = 0;
-  lastDeletedTimestamp = 0;
+  if (protectionActivated) {
+    deletedChannels = 0;
+    lastDeletedTimestamp = 0;
+  }
 });
 
 function displayHelp(message) {
@@ -59,15 +63,16 @@ function displayHelp(message) {
     .setTitle('Commandes du Bot Protect')
     .setDescription('Utilisez ces commandes pour gérer la protection du serveur.')
     .addField('+help', 'Affiche cette aide.')
-    .addField('+protect++', 'Active une protection renforcée, aucun webbook peut être créé, et si tous les salons se suppriment, tous les bots sont expulsés et plus!')
-    .addField('+protect', 'Active la protection normale, aucun webbok peut être créé et plus!')
+    .addField('+protect++', 'Active une protection renforcée, aucun webbook peut être créé, et si tous les salons se suppriment, tous les bots sont expulsés!')
+    .addField('+protect', 'Active la protection normale, aucun webbok peut être créé, et plus!')
     .setFooter('Fait entièrement par _tiyoky! Me DM si il y a un problème avec le bot.');
 
   message.channel.send({ embeds: [embed] });
 }
 
-async function activateHighProtection(message) {
+function activateHighProtection(message) {
   // Logique pour activer la protection renforcée
+  protectionActivated = true;
   message.channel.send('Protection renforcée activée.');
 }
 
@@ -85,12 +90,14 @@ async function activateProtection(message) {
 }
 
 function kickAllBots(guild) {
-  // Expulse tous les bots du serveur
-  guild.members.cache
-    .filter(member => member.user.bot)
-    .forEach(bot => bot.kick());
+  if (protectionActivated) {
+    // Expulse tous les bots du serveur
+    guild.members.cache
+      .filter(member => member.user.bot)
+      .forEach(bot => bot.kick());
 
-  console.log('Tous les bots ont été expulsés du serveur.');
+    console.log('Tous les bots ont été expulsés du serveur.');
+  }
 }
 
 setInterval(() => {
