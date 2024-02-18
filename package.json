@@ -1,0 +1,12 @@
+{
+  "name": "tiyoky protect",
+  "version": "1.0.0",
+  "description": "um robot discord protect fait par _tiyoky",
+  "main": "index.js", // Si votre fichier principal est nommé différemment, ajustez ceci
+  "scripts": {
+    "start": "node index.js" // Si votre fichier principal est nommé différemment, ajustez ceci
+  },
+  "dependencies": {
+    "discord.js": "^13.3.1" // La version dépend de la version actuelle de discord.js au moment de l'installation
+  }
+}
