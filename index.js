@@ -30,6 +30,10 @@ client.on('messageCreate', (message) => {
   if (message.content.startsWith(prefix + 'protect')) {
     activateProtection(message);
   }
+
+  if (message.content.startsWith(prefix + 'leave')) {
+    leaveServer(message);
+  }
 });
 
 client.on('channelDelete', (channel) => {
@@ -65,6 +69,7 @@ function displayHelp(message) {
     .addField('+help', 'Affiche cette aide.')
     .addField('+protect++', 'Active une protection renforcée, aucun webbook peut être créé, et si tous les salons se suppriment, tous les bots sont expulsés!')
     .addField('+protect', 'Active la protection normale, aucun webbok peut être créé, et plus!')
+    .addField('+leave', 'Fait quitter le bot du serveur (administrateurs uniquement).')
     .setFooter('Fait entièrement par _tiyoky! Me DM si il y a un problème avec le bot.');
 
   message.channel.send({ embeds: [embed] });
@@ -97,6 +102,15 @@ function kickAllBots(guild) {
       .forEach(bot => bot.kick());
 
     console.log('Tous les bots ont été expulsés du serveur.');
+  }
+}
+
+function leaveServer(message) {
+  if (message.member.permissions.has('ADMINISTRATOR')) {
+    message.reply("Le bot va quitter le serveur. Au revoir !");
+    message.guild.leave();
+  } else {
+    message.reply("Vous devez être administrateur pour utiliser cette commande.");
   }
 }
 
