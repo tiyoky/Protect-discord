@@ -93,4 +93,11 @@ function kickAllBots(guild) {
   console.log('Tous les bots ont été expulsés du serveur.');
 }
 
+setInterval(() => {
+  client.user.setActivity('fait par _tiyoky', { type: 'PLAYING' });
+  setTimeout(() => {
+    client.user.setActivity('**le** bot protect fait par _tiyoky', { type: 'PLAYING' });
+  }, 2000);
+}, 4000);
+
 client.login('process.env.TOKEN');
