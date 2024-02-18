@@ -55,13 +55,13 @@ client.on('guildCreate', (guild) => {
 
 function displayHelp(message) {
   const embed = new MessageEmbed()
-    .setColor('#3498db')
+    .setColor('#2ECC71')
     .setTitle('Commandes du Bot Protect')
     .setDescription('Utilisez ces commandes pour gérer la protection du serveur.')
     .addField('+help', 'Affiche cette aide.')
-    .addField('+protect++', 'Active une protection renforcée.')
-    .addField('+protect', 'Active la protection normale.')
-    .setFooter('Votre texte de pied de page ici.');
+    .addField('+protect++', 'Active une protection renforcée, aucun webbook peut etre creer , et si tout les salons se suprime tout les bot se font kick et plus!')
+    .addField('+protect', 'Active la protection normale,aucun webbok peut etre creer et plus!')
+    .setFooter('fait entierement par _tiyoky! me dm si il y a un probleme avec le bot');
 
   message.channel.send({ embeds: [embed] });
 }
