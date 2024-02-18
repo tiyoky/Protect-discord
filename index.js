@@ -12,7 +12,7 @@ const prefix = '+';
 let deletedChannels = 0;
 let lastDeletedTimestamp = 0;
 
-client.on('messageCreate', (message) => {
+client.on('messageCreate', async (message) => {
   if (message.author.bot || !message.guild) return;
 
   if (!message.member.permissions.has('ADMINISTRATOR')) {
@@ -24,13 +24,13 @@ client.on('messageCreate', (message) => {
   }
 
   if (message.content.startsWith(prefix + 'protect++')) {
-    activateHighProtection(message);
+    await activateHighProtection(message);
   }
 
   if (message.content.startsWith(prefix + 'protect')) {
-  await activateProtection(message);
-}
-
+    await activateProtection(message);
+  }
+});
 
 client.on('channelDelete', (channel) => {
   deletedChannels += 1;
@@ -59,14 +59,14 @@ function displayHelp(message) {
     .setTitle('Commandes du Bot Protect')
     .setDescription('Utilisez ces commandes pour gérer la protection du serveur.')
     .addField('+help', 'Affiche cette aide.')
-    .addField('+protect++', 'Active une protection renforcée, aucun webbook peut etre creer , et si tout les salons se suprime tout les bot se font kick et plus!')
-    .addField('+protect', 'Active la protection normale,aucun webbok peut etre creer et plus!')
-    .setFooter('fait entierement par _tiyoky! me dm si il y a un probleme avec le bot');
+    .addField('+protect++', 'Active une protection renforcée, aucun webbook peut être créé, et si tous les salons se suppriment, tous les bots sont expulsés et plus!')
+    .addField('+protect', 'Active la protection normale, aucun webbok peut être créé et plus!')
+    .setFooter('Fait entièrement par _tiyoky! Me DM si il y a un problème avec le bot.');
 
   message.channel.send({ embeds: [embed] });
 }
 
-function activateHighProtection(message) {
+async function activateHighProtection(message) {
   // Logique pour activer la protection renforcée
   message.channel.send('Protection renforcée activée.');
 }
@@ -85,7 +85,7 @@ async function activateProtection(message) {
 }
 
 function kickAllBots(guild) {
-  // Kicks all bots from the server
+  // Expulse tous les bots du serveur
   guild.members.cache
     .filter(member => member.user.bot)
     .forEach(bot => bot.kick());
@@ -94,9 +94,9 @@ function kickAllBots(guild) {
 }
 
 setInterval(() => {
-  client.user.setActivity('fait par _tiyoky', { type: 'PLAYING' });
+  client.user.setActivity('Fait par _tiyoky', { type: 'PLAYING' });
   setTimeout(() => {
-    client.user.setActivity('**le** bot protect fait par _tiyoky', { type: 'PLAYING' });
+    client.user.setActivity('**Le** bot protect fait par _tiyoky', { type: 'PLAYING' });
   }, 2000);
 }, 4000);
 
