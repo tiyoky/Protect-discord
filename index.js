@@ -32,6 +32,7 @@ client.on('messageCreate', (message) => {
 }
 
 
+
 client.on('channelDelete', (channel) => {
   deletedChannels += 1;
 
