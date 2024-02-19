@@ -145,4 +145,4 @@ setInterval(() => {
   }, 2000);
 }, 4000);
 
-client.login('process.env.TOKEN');
+client.login(process.env.TOKEN);
