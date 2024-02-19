@@ -1,5 +1,4 @@
-const { Client, GatewayIntentBits } = require('discord.js');
-const { MessageEmbed } = require('discord.js');
+const { Client, GatewayIntentBits, MessageEmbed } = require('discord.js');
 const client = new Client({ 
   intents: [
     GatewayIntentBits.Guilds,
@@ -15,6 +14,11 @@ let protectionActivated = false;
 let highProtectionActivated = false;
 let mentionsEveryoneCount = 0;
 let lastMentionTimestamp = 0;
+
+const MENTION_RESET_TIME = 2000; // 2 secondes
+const CHANNEL_RESET_TIME = 1000; // 1 seconde
+const MAX_DELETED_CHANNELS = 10;
+const MAX_MENTIONS_EVERYONE = 10;
 
 client.on('ready', () => {
   console.log(`Le bot est en ligne en tant que ${client.user.tag}!`);
@@ -47,14 +51,14 @@ client.on('messageCreate', (message) => {
     const currentTimestamp = Date.now();
     const timeDifference = currentTimestamp - lastMentionTimestamp;
 
-    if (timeDifference > 2000) {
+    if (timeDifference > MENTION_RESET_TIME) {
       // Reset si plus de 2 secondes se sont écoulées
       mentionsEveryoneCount = 1;
       lastMentionTimestamp = currentTimestamp;
     } else {
       mentionsEveryoneCount += 1;
 
-      if (mentionsEveryoneCount >= 10) {
+      if (mentionsEveryoneCount >= MAX_MENTIONS_EVERYONE) {
         // Kick all bots si 10 mentions "everyone" en 2 secondes
         kickAllBots(message.guild);
       }
@@ -69,11 +73,11 @@ client.on('channelDelete', (channel) => {
     const currentTimestamp = Date.now();
     const timeDifference = currentTimestamp - lastDeletedTimestamp;
 
-    if (timeDifference > 1000) {
+    if (timeDifference > CHANNEL_RESET_TIME) {
       // Reset si plus de 1 seconde s'est écoulée
       deletedChannels = 1;
       lastDeletedTimestamp = currentTimestamp;
-    } else if (deletedChannels >= 10) {
+    } else if (deletedChannels >= MAX_DELETED_CHANNELS) {
       // Kick all bots si plus de 10 salons supprimés en 1 seconde
       kickAllBots(channel.guild);
     }
@@ -117,7 +121,7 @@ async function activateProtection(message) {
     message.channel.send('Protection activée. Les membres ne peuvent plus créer de webhooks.');
   } catch (error) {
     console.error('Erreur lors de l\'activation de la protection :', error);
-    message.reply('Impossible d\'activer la protection.');
+    message.reply('Une erreur s\'est produite lors de l\'activation de la protection. Veuillez réessayer.');
   }
 }
 
@@ -136,7 +140,8 @@ function kickAllBots(guild) {
 
 function leaveServer(message) {
   if (message.member.permissions.has('ADMINISTRATOR')) {
-    message.reply("Le bot va quitter le serveur. Au revoir ! -_tiyoky");
+    message.reply("Le bot va quitter le
+ serveur. Au revoir ! -_tiyoky");
     message.guild.leave();
   } else {
     message.reply("Vous devez être administrateur pour utiliser cette commande.");
