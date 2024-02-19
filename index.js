@@ -15,6 +15,10 @@ let highProtectionActivated = false;
 let mentionsEveryoneCount = 0;
 let lastMentionTimestamp = 0;
 
+client.on('ready', () => {
+  console.log(`Le bot est en ligne en tant que ${client.user.tag}!`);
+});
+
 client.on('messageCreate', (message) => {
   if (message.author.bot || !message.guild) return;
 
