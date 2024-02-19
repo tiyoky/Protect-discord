@@ -140,8 +140,7 @@ function kickAllBots(guild) {
 
 function leaveServer(message) {
   if (message.member.permissions.has('ADMINISTRATOR')) {
-    message.reply("Le bot va quitter le
- serveur. Au revoir ! -_tiyoky");
+    message.reply("Le bot va quitter le serveur. Au revoir ! -_tiyoky");
     message.guild.leave();
   } else {
     message.reply("Vous devez être administrateur pour utiliser cette commande.");
