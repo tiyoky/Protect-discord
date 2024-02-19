@@ -118,7 +118,7 @@ function displayHelp(message) {
 function activateHighProtection(message) {
   // Logique pour activer la protection renforcée
   highProtectionActivated = true;
-  protectionActivated = true; // Vous pouvez également activer la protection normale ici si nécessaire
+  protectionActivated = false; // Vous pouvez également activer la protection normale ici si nécessaire
   message.channel.send('Protection renforcée activée.');
 }
 
