@@ -5,7 +5,7 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
   ],
-});;
+});
 
 const prefix = '+';
 let deletedChannels = 0;
