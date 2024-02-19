@@ -135,7 +135,7 @@ async function activateProtection(message) {
     
     // Logique supplémentaire si nécessaire
     protectionActivated = true;
-    message.channel.send('Protection activée. Les membres ne peuvent plus créer de webhooks.');
+    message.channel.send('Protection activée.');
   } catch (error) {
     console.error('Erreur lors de l\'activation de la protection :', error);
     message.reply('Une erreur s\'est produite lors de l\'activation de la protection. Veuillez réessayer.');
