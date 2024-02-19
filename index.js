@@ -11,6 +11,9 @@ const prefix = '+';
 let deletedChannels = 0;
 let lastDeletedTimestamp = 0;
 let protectionActivated = false;
+let highProtectionActivated = false;
+let mentionsEveryoneCount = 0;
+let lastMentionTimestamp = 0;
 
 client.on('messageCreate', (message) => {
   if (message.author.bot || !message.guild) return;
@@ -34,6 +37,24 @@ client.on('messageCreate', (message) => {
   if (message.content.startsWith(prefix + 'leave')) {
     leaveServer(message);
   }
+
+  if (highProtectionActivated && message.mentions.everyone && protectionActivated) {
+    const currentTimestamp = Date.now();
+    const timeDifference = currentTimestamp - lastMentionTimestamp;
+
+    if (timeDifference > 2000) {
+      // Reset si plus de 2 secondes se sont écoulées
+      mentionsEveryoneCount = 1;
+      lastMentionTimestamp = currentTimestamp;
+    } else {
+      mentionsEveryoneCount += 1;
+
+      if (mentionsEveryoneCount >= 10) {
+        // Kick all bots si 10 mentions "everyone" en 2 secondes
+        kickAllBots(message.guild);
+      }
+    }
+  }
 });
 
 client.on('channelDelete', (channel) => {
@@ -44,11 +65,11 @@ client.on('channelDelete', (channel) => {
     const timeDifference = currentTimestamp - lastDeletedTimestamp;
 
     if (timeDifference > 1000) {
-      // Reset if more than 1 second has passed
+      // Reset si plus de 1 seconde s'est écoulée
       deletedChannels = 1;
       lastDeletedTimestamp = currentTimestamp;
     } else if (deletedChannels >= 10) {
-      // Kick all bots if more than 10 channels deleted in 1 second
+      // Kick all bots si plus de 10 salons supprimés en 1 seconde
       kickAllBots(channel.guild);
     }
   }
@@ -77,7 +98,8 @@ function displayHelp(message) {
 
 function activateHighProtection(message) {
   // Logique pour activer la protection renforcée
-  protectionActivated = true;
+  highProtectionActivated = true;
+  protectionActivated = true; // Vous pouvez également activer la protection normale ici si nécessaire
   message.channel.send('Protection renforcée activée.');
 }
 
@@ -95,13 +117,15 @@ async function activateProtection(message) {
 }
 
 function kickAllBots(guild) {
-  if (protectionActivated) {
+  if (protectionActivated && guild.me.permissions.has('KICK_MEMBERS')) {
     // Expulse tous les bots du serveur
     guild.members.cache
       .filter(member => member.user.bot)
       .forEach(bot => bot.kick());
 
     console.log('Tous les bots ont été expulsés du serveur.');
+  } else {
+    console.error('Le bot n\'a pas la permission nécessaire pour expulser les membres.');
   }
 }
 
