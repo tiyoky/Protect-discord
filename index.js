@@ -3,10 +3,10 @@ const client = new Client({
   intents: [
     Intents.FLAGS.GUILDS,
     Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.MESSAGE_CONTENT,
+    Intents.FLAGS.GUILD_MESSAGE_CONTENT,
+
   ],
 });
-
 
 const prefix = '+';
 let deletedChannels = 0;
@@ -42,6 +42,14 @@ client.on('messageCreate', (message) => {
 
   if (message.content.startsWith(prefix + 'protect')) {
     activateProtection(message);
+  }
+
+  if (message.content.startsWith(prefix + 'unprotect++')) {
+    deactivateHighProtection(message);
+  }
+
+  if (message.content.startsWith(prefix + 'unprotect')) {
+    deactivateProtection(message);
   }
 
   if (message.content.startsWith(prefix + 'leave')) {
@@ -96,10 +104,12 @@ function displayHelp(message) {
   const embed = new MessageEmbed()
     .setColor('#2ECC71')
     .setTitle('Commandes du Bot Protect')
-    .description('Utilisez ces commandes pour gérer la protection du serveur.')  // Correction ici
+    .setDescription('Utilisez ces commandes pour gérer la protection du serveur.')
     .addField('+help', 'Affiche cette aide.')
     .addField('+protect++', 'Active une protection renforcée, aucun webbook peut être créé, et si tous les salons se suppriment, tous les bots sont expulsés!')
     .addField('+protect', 'Active la protection normale, aucun webbok peut être créé, et plus!')
+    .addField('+unprotect++', 'Désactive la protection renforcée.')
+    .addField('+unprotect', 'Désactive la protection normale.')
     .addField('+leave', 'Fait quitter le bot du serveur (administrateurs uniquement).')
     .setFooter('Fait entièrement par _tiyoky! Me DM si il y a un problème avec le bot.');
 
@@ -113,17 +123,30 @@ function activateHighProtection(message) {
   message.channel.send('Protection renforcée activée.');
 }
 
+function deactivateHighProtection(message) {
+  // Logique pour désactiver la protection renforcée
+  highProtectionActivated = false;
+  message.channel.send('Protection renforcée désactivée.');
+}
+
 async function activateProtection(message) {
   try {
     // Désactive la permission de créer des webhooks pour tout le monde
     await message.guild.roles.everyone.permissions.remove(['CREATE_INSTANT_INVITE', 'MANAGE_WEBHOOKS']);
     
     // Logique supplémentaire si nécessaire
+    protectionActivated = true;
     message.channel.send('Protection activée. Les membres ne peuvent plus créer de webhooks.');
   } catch (error) {
     console.error('Erreur lors de l\'activation de la protection :', error);
     message.reply('Une erreur s\'est produite lors de l\'activation de la protection. Veuillez réessayer.');
   }
+}
+
+function deactivateProtection(message) {
+  // Logique pour désactiver la protection
+  protectionActivated = false;
+  message.channel.send('Protection désactivée.');
 }
 
 function kickAllBots(guild) {
