@@ -96,7 +96,7 @@ function displayHelp(message) {
   const embed = new MessageEmbed()
     .setColor('#2ECC71')
     .setTitle('Commandes du Bot Protect')
-    .setDescription('Utilisez ces commandes pour gérer la protection du serveur.')
+    .description('Utilisez ces commandes pour gérer la protection du serveur.')  // Correction ici
     .addField('+help', 'Affiche cette aide.')
     .addField('+protect++', 'Active une protection renforcée, aucun webbook peut être créé, et si tous les salons se suppriment, tous les bots sont expulsés!')
     .addField('+protect', 'Active la protection normale, aucun webbok peut être créé, et plus!')
