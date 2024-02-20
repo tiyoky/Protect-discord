@@ -24,11 +24,15 @@ client.on('ready', () => {
   console.log(`Le bot est en ligne en tant que ${client.user.tag}!`);
 });
 
+// ... (autres parties du code restent inchangées)
+
 client.on('messageCreate', (message) => {
   if (message.author.bot || !message.guild) return;
 
+  // Permet aux utilisateurs ordinaires de parler sans recevoir de message d'erreur
   if (!message.member.permissions.has('ADMINISTRATOR')) {
-    return message.reply("Vous n'avez pas la permission d'utiliser ces commandes.");
+    // L'utilisateur ordinaire peut parler ici sans déclencher d'erreur
+    return;
   }
 
   if (message.content.startsWith(prefix + 'help')) {
@@ -73,6 +77,9 @@ client.on('messageCreate', (message) => {
     }
   }
 });
+
+// ... (autres parties du code restent inchangées)
+
 
 client.on('channelDelete', (channel) => {
   if (protectionActivated) {
