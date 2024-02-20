@@ -36,6 +36,16 @@ client.on('messageCreate', (message) => {
     return;
   }
 
+    if (message.content.startsWith(prefix + 'purge')) {
+    // Récupérez le nombre de messages à supprimer depuis la commande
+    const args = message.content.slice(prefix.length).trim().split(/ +/);
+    const amount = parseInt(args[1]);
+
+    // Appelez la fonction de purge
+    purgeMessages(message, amount);
+    return;
+  }
+
   if (message.content.startsWith(prefix + 'help')) {
     displayHelp(message);
   }
@@ -137,6 +147,37 @@ function banUser(message) {
     message.reply('Vous n\'avez pas la permission de bannir des membres.');
     return;
   }
+
+  function purgeMessages(message, amount) {
+  // Vérifiez si l'utilisateur a la permission de gérer les messages
+  if (!message.member.permissions.has('MANAGE_MESSAGES')) {
+    message.reply('Vous n\'avez pas la permission de gérer les messages.');
+    return;
+  }
+
+  // Vérifiez si un nombre valide de messages à supprimer a été fourni
+  if (isNaN(amount) || amount < 1 || amount > 100) {
+    message.reply('Veuillez fournir un nombre valide entre 1 et 100 pour la suppression des messages.');
+    return;
+  }
+
+  // Supprime le nombre spécifié de messages
+  message.channel.bulkDelete(amount, true)
+    .then(deletedMessages => {
+      message.reply(`Suppression de ${deletedMessages.size} messages avec succès.`)
+        .then(replyMessage => {
+          // Supprime le message de réponse après quelques secondes
+          setTimeout(() => {
+            replyMessage.delete().catch(console.error);
+          }, 5000);
+        });
+    })
+    .catch(error => {
+      console.error('Erreur lors de la suppression des messages :', error);
+      message.reply('Une erreur s\'est produite lors de la suppression des messages. Veuillez réessayer.');
+    });
+}
+
 
   // Récupérez la mention de l'utilisateur à bannir
   const userToBan = message.mentions.members.first();
