@@ -204,4 +204,5 @@ setInterval(() => {
     client.user.setActivity('**Le** bot protect fait par _tiyoky', { type: 'PLAYING' });
   }, 2000);
 }, 4000);
+
 client.login(process.env.TOKEN);
