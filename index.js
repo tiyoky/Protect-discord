@@ -40,6 +40,14 @@ client.on('messageCreate', (message) => {
     displayHelp(message);
   }
 
+  client.on('messageCreate', (message) => {
+  // ...
+
+  if (message.content.startsWith(prefix + 'ban')) {
+    banUser(message);
+    return;
+  }
+
   if (message.content.startsWith(prefix + 'protect++')) {
     activateHighProtection(message);
   }
@@ -122,6 +130,34 @@ function displayHelp(message) {
 
   message.channel.send({ embeds: [embed] });
 }
+
+function banUser(message) {
+  // Vérifiez si l'utilisateur a la permission de bannir des membres
+  if (!message.member.permissions.has('BAN_MEMBERS')) {
+    message.reply('Vous n\'avez pas la permission de bannir des membres.');
+    return;
+  }
+
+  // Récupérez la mention de l'utilisateur à bannir
+  const userToBan = message.mentions.members.first();
+
+  // Vérifiez si une mention valide a été fournie
+  if (!userToBan) {
+    message.reply('Veuillez mentionner l\'utilisateur que vous souhaitez bannir.');
+    return;
+  }
+
+  // Bannir l'utilisateur
+  userToBan.ban()
+    .then(() => {
+      message.reply(`L'utilisateur ${userToBan.user.tag} a été banni avec succès.`);
+    })
+    .catch(error => {
+      console.error('Erreur lors du bannissement :', error);
+      message.reply('Une erreur s\'est produite lors du bannissement de l\'utilisateur. Veuillez réessayer.');
+    });
+}
+
 
 function activateHighProtection(message) {
   // Logique pour activer la protection renforcée
