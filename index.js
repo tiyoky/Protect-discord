@@ -120,6 +120,8 @@ function displayHelp(message) {
     .addField('+unprotect++', 'Désactive la protection renforcée.')
     .addField('+unprotect', 'Désactive la protection normale.')
     .addField('+leave', 'Fait quitter le bot du serveur (administrateurs uniquement).')
+    .addField('+purge nombre', 'suprime un nombre de message specifique')
+    .addField('+ban user', 'ban la personne choisi pendant la commande @')
     .setFooter('Fait entièrement par _tiyoky! Me DM si il y a un problème avec le bot.');
 
   message.channel.send({ embeds: [embed] });
