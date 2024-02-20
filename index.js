@@ -16,8 +16,8 @@ let highProtectionActivated = false;
 let mentionsEveryoneCount = 0;
 let lastMentionTimestamp = 0;
 
-const MENTION_RESET_TIME = 2000; 
-const CHANNEL_RESET_TIME = 2000; 
+const MENTION_RESET_TIME = 3000; 
+const CHANNEL_RESET_TIME = 3000; 
 const MAX_DELETED_CHANNELS = 10;
 const MAX_MENTIONS_EVERYONE = 10;
 
@@ -201,7 +201,7 @@ function leaveServer(message) {
 setInterval(() => {
   client.user.setActivity('Fait par _tiyoky', { type: 'PLAYING' });
   setTimeout(() => {
-    client.user.setActivity('**Le** bot protect fait par _tiyoky', { type: 'PLAYING' });
+    client.user.setActivity('5 invites = bot protect perso', { type: 'PLAYING' });
   }, 2000);
 }, 4000);
 
