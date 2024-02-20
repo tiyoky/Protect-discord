@@ -201,8 +201,8 @@ function leaveServer(message) {
 setInterval(() => {
   client.user.setActivity('Fait par _tiyoky', { type: 'PLAYING' });
   setTimeout(() => {
-    client.user.setActivity('**Le** bot protect fait par _tiyoky', { type: 'PLAYING' });
+    client.user.setActivity('*Le* bot protect fait par _tiyoky', { type: 'PLAYING' });
   }, 2000);
-},
+}, 4000);
 
 client.login(process.env.TOKEN);
