@@ -1,4 +1,4 @@
-ar http = require('http');
+var http = require('http');
 
 http.createserver(function (req, res) {
    res.write("im alive");
