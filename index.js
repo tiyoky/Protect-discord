@@ -1,6 +1,6 @@
-const keep_alive = require('./keep_alive.js')
+const keep_alive = require('./keep_alive.js');
 const { Client, Intents, MessageEmbed } = require('discord.js');
-const client = new Client({ 
+const client = new Client({
   intents: [
     Intents.FLAGS.GUILDS,
     Intents.FLAGS.GUILD_MESSAGES,
@@ -25,23 +25,17 @@ client.on('ready', () => {
   console.log(`Le bot est en ligne en tant que ${client.user.tag}!`);
 });
 
-// ... (autres parties du code restent inchangées)
-
 client.on('messageCreate', (message) => {
   if (message.author.bot || !message.guild) return;
 
-  // Permet aux utilisateurs ordinaires de parler sans recevoir de message d'erreur
   if (!message.member.permissions.has('ADMINISTRATOR')) {
-    // L'utilisateur ordinaire peut parler ici sans déclencher d'erreur
     return;
   }
 
-    if (message.content.startsWith(prefix + 'purge')) {
-    // Récupérez le nombre de messages à supprimer depuis la commande
+  if (message.content.startsWith(prefix + 'purge')) {
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const amount = parseInt(args[1]);
 
-    // Appelez la fonction de purge
     purgeMessages(message, amount);
     return;
   }
@@ -49,9 +43,6 @@ client.on('messageCreate', (message) => {
   if (message.content.startsWith(prefix + 'help')) {
     displayHelp(message);
   }
-
-  client.on('messageCreate', (message) => {
-  // ...
 
   if (message.content.startsWith(prefix + 'ban')) {
     banUser(message);
@@ -83,22 +74,17 @@ client.on('messageCreate', (message) => {
     const timeDifference = currentTimestamp - lastMentionTimestamp;
 
     if (timeDifference > MENTION_RESET_TIME) {
-      // Reset si plus de 2 secondes se sont écoulées
       mentionsEveryoneCount = 1;
       lastMentionTimestamp = currentTimestamp;
     } else {
       mentionsEveryoneCount += 1;
 
       if (mentionsEveryoneCount >= MAX_MENTIONS_EVERYONE) {
-        // Kick all bots si 10 mentions "everyone" en 2 secondes
         kickAllBots(message.guild);
       }
     }
   }
 });
-
-// ... (autres parties du code restent inchangées)
-
 
 client.on('channelDelete', (channel) => {
   if (protectionActivated) {
@@ -108,11 +94,9 @@ client.on('channelDelete', (channel) => {
     const timeDifference = currentTimestamp - lastDeletedTimestamp;
 
     if (timeDifference > CHANNEL_RESET_TIME) {
-      // Reset si plus de 1 seconde s'est écoulée
       deletedChannels = 1;
       lastDeletedTimestamp = currentTimestamp;
     } else if (deletedChannels >= MAX_DELETED_CHANNELS) {
-      // Kick all bots si plus de 10 salons supprimés en 1 seconde
       kickAllBots(channel.guild);
     }
   }
@@ -142,53 +126,18 @@ function displayHelp(message) {
 }
 
 function banUser(message) {
-  // Vérifiez si l'utilisateur a la permission de bannir des membres
   if (!message.member.permissions.has('BAN_MEMBERS')) {
     message.reply('Vous n\'avez pas la permission de bannir des membres.');
     return;
   }
 
-  function purgeMessages(message, amount) {
-  // Vérifiez si l'utilisateur a la permission de gérer les messages
-  if (!message.member.permissions.has('MANAGE_MESSAGES')) {
-    message.reply('Vous n\'avez pas la permission de gérer les messages.');
-    return;
-  }
-
-  // Vérifiez si un nombre valide de messages à supprimer a été fourni
-  if (isNaN(amount) || amount < 1 || amount > 100) {
-    message.reply('Veuillez fournir un nombre valide entre 1 et 100 pour la suppression des messages.');
-    return;
-  }
-
-  // Supprime le nombre spécifié de messages
-  message.channel.bulkDelete(amount, true)
-    .then(deletedMessages => {
-      message.reply(`Suppression de ${deletedMessages.size} messages avec succès.`)
-        .then(replyMessage => {
-          // Supprime le message de réponse après quelques secondes
-          setTimeout(() => {
-            replyMessage.delete().catch(console.error);
-          }, 5000);
-        });
-    })
-    .catch(error => {
-      console.error('Erreur lors de la suppression des messages :', error);
-      message.reply('Une erreur s\'est produite lors de la suppression des messages. Veuillez réessayer.');
-    });
-}
-
-
-  // Récupérez la mention de l'utilisateur à bannir
   const userToBan = message.mentions.members.first();
 
-  // Vérifiez si une mention valide a été fournie
   if (!userToBan) {
     message.reply('Veuillez mentionner l\'utilisateur que vous souhaitez bannir.');
     return;
   }
 
-  // Bannir l'utilisateur
   userToBan.ban()
     .then(() => {
       message.reply(`L'utilisateur ${userToBan.user.tag} a été banni avec succès.`);
@@ -199,26 +148,20 @@ function banUser(message) {
     });
 }
 
-
 function activateHighProtection(message) {
-  // Logique pour activer la protection renforcée
   highProtectionActivated = true;
-  protectionActivated = false; // Vous pouvez également activer la protection normale ici si nécessaire
+  protectionActivated = false;
   message.channel.send('Protection renforcée activée.\<a:emoji_5:1209532221967437945>');
 }
 
 function deactivateHighProtection(message) {
-  // Logique pour désactiver la protection renforcée
   highProtectionActivated = false;
   message.channel.send('Protection renforcée désactivée.');
 }
 
 async function activateProtection(message) {
   try {
-    // Désactive la permission de créer des webhooks pour tout le monde
     await message.guild.roles.everyone.permissions.remove(['CREATE_INSTANT_INVITE', 'MANAGE_WEBHOOKS']);
-    
-    // Logique supplémentaire si nécessaire
     protectionActivated = true;
     message.channel.send('Protection activée.\<a:emoji_5:1209532221967437945>');
   } catch (error) {
@@ -228,14 +171,12 @@ async function activateProtection(message) {
 }
 
 function deactivateProtection(message) {
-  // Logique pour désactiver la protection
   protectionActivated = false;
   message.channel.send('Protection désactivée.');
 }
 
 function kickAllBots(guild) {
   if (protectionActivated && guild.me.permissions.has('KICK_MEMBERS')) {
-    // Expulse tous les bots du serveur
     guild.members.cache
       .filter(member => member.user.bot)
       .forEach(bot => bot.kick());
@@ -260,6 +201,6 @@ setInterval(() => {
   setTimeout(() => {
     client.user.setActivity('**Le** bot protect fait par _tiyoky', { type: 'PLAYING' });
   }, 2000);
-}, 4000);
+},
 
 client.login(process.env.TOKEN);
