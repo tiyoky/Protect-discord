@@ -112,7 +112,7 @@ client.on('guildCreate', (guild) => {
 
 function displayHelp(message) {
   const embed = new MessageEmbed()
-    .setColor('#2ECC71')
+    .setColor(0x2ECC71)
     .setTitle('Commandes du Bot Protect')
     .setDescription('Utilisez ces commandes pour gérer la protection du serveur.')
     .addField('+help', 'Affiche cette aide.')
