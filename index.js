@@ -16,8 +16,8 @@ let highProtectionActivated = false;
 let mentionsEveryoneCount = 0;
 let lastMentionTimestamp = 0;
 
-const MENTION_RESET_TIME = 2000; // 2 secondes
-const CHANNEL_RESET_TIME = 1000; // 1 seconde
+const MENTION_RESET_TIME = 2000; 
+const CHANNEL_RESET_TIME = 2000; 
 const MAX_DELETED_CHANNELS = 10;
 const MAX_MENTIONS_EVERYONE = 10;
 
