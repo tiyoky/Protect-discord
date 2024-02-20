@@ -127,7 +127,7 @@ function activateHighProtection(message) {
   // Logique pour activer la protection renforcée
   highProtectionActivated = true;
   protectionActivated = false; // Vous pouvez également activer la protection normale ici si nécessaire
-  message.channel.send('Protection renforcée activée.');
+  message.channel.send('Protection renforcée activée.\<a:emoji_5:1209532221967437945>');
 }
 
 function deactivateHighProtection(message) {
@@ -143,7 +143,7 @@ async function activateProtection(message) {
     
     // Logique supplémentaire si nécessaire
     protectionActivated = true;
-    message.channel.send('Protection activée.');
+    message.channel.send('Protection activée.\<a:emoji_5:1209532221967437945>');
   } catch (error) {
     console.error('Erreur lors de l\'activation de la protection :', error);
     message.reply('Une erreur s\'est produite lors de l\'activation de la protection. Veuillez réessayer.');
