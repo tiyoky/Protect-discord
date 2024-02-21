@@ -22,9 +22,18 @@ const CHANNEL_RESET_TIME = 3000;
 const MAX_DELETED_CHANNELS = 10;
 const MAX_MENTIONS_EVERYONE = 10;
 
-client.on('ready', () => {
+client.once('ready', () => {
   console.log(`Le bot est en ligne en tant que ${client.user.tag}!`);
+
+  // Placez ici le code que vous souhaitez exécuter une fois que le client est prêt
+  setInterval(() => {
+    client.user.setActivity('Fait par _tiyoky', { type: 'PLAYING' });
+    setTimeout(() => {
+      client.user.setActivity('**Le** bot protect fait par _tiyoky', { type: 'PLAYING' });
+    }, 2000);
+  }, 4000);
 });
+
 
 client.on('messageCreate', (message) => {
   if (message.author.bot || !message.guild) return;
@@ -231,12 +240,5 @@ function leaveServer(message) {
     message.reply("Vous devez être administrateur pour utiliser cette commande.");
   }
 }
-
-setInterval(() => {
-  client.user.setActivity('Fait par _tiyoky', { type: 'PLAYING' });
-  setTimeout(() => {
-    client.user.setActivity('5 invites = bot protect perso', { type: 'PLAYING' });
-  }, 2000);
-}, 4000);
 
 client.login(process.env.TOKEN);
