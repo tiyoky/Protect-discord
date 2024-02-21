@@ -190,6 +190,32 @@ function kickAllBots(guild) {
   }
 }
 
+function purgeMessages(message, amount) {
+  // Vérifier si la personne qui a envoyé la commande est un administrateur
+  if (!message.member.permissions.has('ADMINISTRATOR')) {
+    message.reply("Vous n'avez pas la permission d'utiliser cette commande.");
+    return;
+  }
+
+  // Vérifier si un nombre valide a été fourni
+  if (isNaN(amount) || amount <= 0) {
+    message.reply("Veuillez fournir un nombre valide pour supprimer les messages.");
+    return;
+  }
+
+  // Supprimer les messages
+  message.channel.bulkDelete(amount)
+    .then(() => {
+      message.reply(`Suppression réussie de ${amount} messages.`)
+        .then(msg => msg.delete({ timeout: 5000 }));
+    })
+    .catch(error => {
+      console.error('Erreur lors de la suppression des messages :', error);
+      message.reply('Une erreur s\'est produite lors de la suppression des messages. Veuillez réessayer.');
+    });
+}
+
+
 function leaveServer(message) {
   if (message.member.permissions.has('ADMINISTRATOR')) {
     message.reply("Le bot va quitter le serveur. Au revoir ! -_tiyoky");
