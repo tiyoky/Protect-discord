@@ -191,6 +191,12 @@ function kickAllBots(guild) {
 }
 
 function purgeMessages(message, amount) {
+  // Vérifier si le bot a la permission de gérer les messages
+  if (!message.guild.me.permissions.has('MANAGE_MESSAGES')) {
+    message.reply("Je n'ai pas la permission de gérer les messages.");
+    return;
+  }
+
   // Vérifier si la personne qui a envoyé la commande est un administrateur
   if (!message.member.permissions.has('ADMINISTRATOR')) {
     message.reply("Vous n'avez pas la permission d'utiliser cette commande.");
@@ -214,6 +220,7 @@ function purgeMessages(message, amount) {
       message.reply('Une erreur s\'est produite lors de la suppression des messages. Veuillez réessayer.');
     });
 }
+
 
 
 function leaveServer(message) {
